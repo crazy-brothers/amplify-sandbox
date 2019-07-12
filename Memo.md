@@ -78,22 +78,72 @@ IAMが自動生成される
 S3が自動生成される  
 ![S3](md-images/2019-07-12-15-02-59.png)
 
-CloudFormationはテンプレートが作成される  
+CloudFormationはテンプレートが作成される
 `team-provider-info.json`
 
-```json
-{
-    "dev": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-sandbox-dev-20190712144240-authRole",
-            "UnauthRoleArn": "arn:aws:iam::003995953257:role/amplify-sandbox-dev-20190712144240-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::003995953257:role/amplify-sandbox-dev-20190712144240-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-sandbox-dev-20190712144240-deployment",
-            "UnauthRoleName": "amplify-sandbox-dev-20190712144240-unauthRole",
-            "StackName": "amplify-sandbox-dev-20190712144240",
-            "StackId": "arn:aws:cloudformation:us-east-1:003995953257:stack/amplify-sandbox-dev-20190712144240/de790290-a467-11e9-bd28-12de81a2e318"
-        }
-    }
-}
+### init後の作業
+
+コンソールには以下の内容が出力されている。
+
+>**Some next steps:**  
+>"amplify status" will show you what you've added already and if it's locally configured or deployed  
+>"amplify \<category> add" will allow you to add features like user login or a backend API  
+>"amplify push" will build all your local backend resources and provision it in the cloud  
+>"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud  
+>
+>**Pro tip:**  
+>Try "amplify add api" to create a backend API and then "amplify publish" to deploy everything  
+
+`amplify status`で現在の状態を確認
+
+```bash
+$ amplify status
+
+Current Environment: dev
+
+| Category | Resource name | Operation | Provider plugin |
+| -------- | ------------- | --------- | --------------- |
+```
+
+`amplify add <category-name>`で追加したいバックエンドリソースを指定する。  
+
+■バックエンドリソース一覧
+
+- analytics
+- api
+- auth
+- function
+- hosting
+- interactions
+- notifications
+- storage
+
+一番手軽な`hosting`から実行する。
+
+```bash
+$ amplify add hosting
+# 選択内容は以下。今回は参考用のため、DEV(HTTP)を指定
+? Select the environment setup: DEV (S3 only with HTTP)
+? hosting bucket name amplify-sandbox-20190712161239-hostingbucket
+? index doc for the website index.html
+? error doc for the website index.html
+# 完了後、publish実行
+$ amplify publish
+```
+
+publish完了後、自動でブラウザが立ち上がる  
+![ブラウザ](md-images/2019-07-12-16-23-00.png)
+
+ホスティング後のステータスを確認
+
+```bash
+$ amplify status
+
+Current Environment: dev
+
+| Category | Resource name   | Operation | Provider plugin   |
+| -------- | --------------- | --------- | ----------------- |
+| Hosting  | S3AndCloudFront | No Change | awscloudformation |
+
+Hosting endpoint: http://amplify-sandbox-20190712161239-hostingbucket-dev.s3-website-us-east-1.amazonaws.com
 ```
