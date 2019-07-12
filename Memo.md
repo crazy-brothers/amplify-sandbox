@@ -172,3 +172,17 @@ frontend build command exited with code 0
 Your app is published successfully.
 https://d2x1vl85jldz43.cloudfront.net
 ```
+
+ステータス確認
+
+```bash
+$ amplify status
+
+Current Environment: dev
+
+| Category | Resource name   | Operation | Provider plugin   |
+| -------- | --------------- | --------- | ----------------- |
+| Hosting  | S3AndCloudFront | No Change | awscloudformation |
+
+Hosting endpoint: https://d2x1vl85jldz43.cloudfront.net
+```
