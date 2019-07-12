@@ -147,3 +147,28 @@ Current Environment: dev
 
 Hosting endpoint: http://amplify-sandbox-20190712161239-hostingbucket-dev.s3-website-us-east-1.amazonaws.com
 ```
+
+---
+
+仕切り直してHTTPSで再構築
+
+ちなみに、HTTPはS3バケットを使用、HTTPSはS3バケット+Cloud Frontを使用する
+
+```bash
+# ホスティング設定をCLIから削除
+$ amplify remove hosting
+# HTTPSで再構築
+$ amplify add hosting
+? Select the environment setup: PROD (S3 with CloudFront using HTTPS)
+? hosting bucket name amplify-sandbox-20190712172010-hostingbucket
+? index doc for the website index.html
+? error doc for the website index.html
+# publishする前にS3バケットの中身を削除すること！！
+# 削除しないとエラーになる
+$ amplify publish
+# 成功すると以下の内容が表示される
+frontend build command exited with code 0
+✔ Uploaded files successfully.
+Your app is published successfully.
+https://d2x1vl85jldz43.cloudfront.net
+```
