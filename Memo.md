@@ -150,6 +150,8 @@ Hosting endpoint: http://amplify-sandbox-20190712161239-hostingbucket-dev.s3-web
 
 ---
 
+## HTTPSでのホスティング
+
 仕切り直してHTTPSで再構築
 
 ちなみに、HTTPはS3バケットを使用、HTTPSはS3バケット+Cloud Frontを使用する
@@ -185,4 +187,63 @@ Current Environment: dev
 | Hosting  | S3AndCloudFront | No Change | awscloudformation |
 
 Hosting endpoint: https://d2x1vl85jldz43.cloudfront.net
+```
+
+---
+
+## 認証機能の追加
+
+以下を参考に構築  
+<https://aws-amplify.github.io/docs/js/authentication>
+
+### 認証方式
+
+認証は以下の２つから選べる
+
+- [Amazon Cognito User Pools](https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/cognito-user-identity-pools.html)
+- [Amazon Cognito Federated Identities](https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/cognito-identity.html)
+
+[User Pools]  
+>Amazon Cognito ユーザープールを使用して、独自のディレクトリをすばやく作成し、  
+>ユーザーにサインアップおよびサインインしたり、ユーザープロファイルを保存したりできます。
+
+こちらはユーザープールを使用して認証を行う機能。  
+Google、Facebook、AmazonなどのソーシャルIDプロバイダー、SAML ベースのIDプロバイダー経由でユーザープールにサインインすることも可能。
+
+![User Pools](https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/images/scenario-authentication-cup.png)
+
+[Federated Identities]  
+>アプリのユーザーが適切なアクセス権のみを取得するように、Amazon Cognito を使用してバックエンドの AWS リソースおよび  
+>API へのアクセスを制御することができます。
+
+こちらは他サービスで認証し、AWSリソースに一時的にアクセス出来るようにする機能。  
+IDプールを使用し、他の認証サービスと連携が可能。
+
+- パブリックプロバイダー: Login with Amazon (ID プール)、Facebook (ID プール)、Google (ID プール)
+- Amazon Cognito ユーザープール
+- Open ID Connect プロバイダー (ID プール)
+- SAML ID プロバイダー (ID プール)
+- 開発者が認証した ID (ID プール)
+
+### 追加手順
+
+以下のコマンドを実行し、認証機能を追加
+
+```bash
+amplify add auth
+```
+
+オプションは以下から選択可能。
+
+- Default configuration：User Poolsのみ使用
+- Default configuration with Social Provider (Federation)：User PoolsとSNS認証を使用
+- Manual configuration：手動設定。自身でAWSリソース設定を行う必要がある
+
+今回は`Default configuration`を選択、認証にはEmailを使用。
+
+上記完了後、以下のコマンドを実行
+
+```bash
+amplify push
+amplify publish
 ```
