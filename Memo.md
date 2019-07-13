@@ -225,6 +225,9 @@ IDプールを使用し、他の認証サービスと連携が可能。
 - SAML ID プロバイダー (ID プール)
 - 開発者が認証した ID (ID プール)
 
+SNS認証を行いたい場合は以下が参考になりそう。  
+<https://dev.to/dabit3/the-complete-guide-to-user-authentication-with-the-amplify-framework-2inh>
+
 ### 追加手順
 
 以下のコマンドを実行し、認証機能を追加
@@ -273,3 +276,43 @@ function App() {
 たったこれだけで認証ページが追加される。
 
 ![認証ページ](md-images/2019-07-13-14-49-59.png)
+
+### サインアップ設定
+
+デフォルト設定の場合、ユーザー名、パスワード、Email、電話番号の設定を求められる。  
+登録する項目を変更したい場合は別途設定が必要。
+
+■サインアップ設定項目
+
+|項目名|説明|
+|:--|:--|
+|header|サインアップ画面のヘッダ文言を設定|
+|signUpFields|サインアップ画面に表示する項目を設定(配列)|
+|defaultCountryCode|電話番号の国コードの初期値を設定|
+|hideAllDefaults|全てのデフォルト入力項目を表示するかを設定(true/false)|
+|hiddenDefaults|特定のデフォルト入力項目を非表示にしたい場合に設定(配列)|
+
+■signUpFieldsの設定項目
+
+|項目名|説明|
+|:--|:--|
+|label|入力項目のラベル|
+|key|User Poolと紐付く項目名 ※1|
+|required|必須有無(true/false)|
+|displayOrder|画面表示順(数値)|
+|type|HTMLのinput type(string, number, password等)|
+|custom|ユーザープールの項目がカスタム項目かの有無(true/false)|
+
+[※1 ユーザープールの属性](https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/user-pool-settings-attributes.html)
+
+上記の設定をオブジェクト(JSON)で定義し、追加する。
+
+```javascript
+const signUpConfig = {
+  // 省略
+};
+
+export default withAuthenticator(App, { signUpConfig });
+```
+
+![サインインカスタマイズ](md-images/2019-07-13-16-31-15.png)

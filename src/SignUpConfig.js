@@ -1,34 +1,6 @@
-import Amplify from 'aws-amplify';
-import awsconfig from './aws-exports';
-import { withAuthenticator } from 'aws-amplify-react';
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// サインアップ画面で設定する内容を定義する
 
-Amplify.configure(awsconfig);
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-const signUpConfig = {
+const config = {
   header: "Create New Account", // サインアップ画面のヘッダ文言を設定
   signUpFields: [
     {
@@ -66,4 +38,4 @@ const signUpConfig = {
   //hiddenDefaults: [] // 特定のデフォルト入力項目を非表示にしたい場合に設定
 };
 
-export default withAuthenticator(App, { signUpConfig });
+export default config;
