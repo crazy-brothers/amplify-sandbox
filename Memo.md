@@ -247,3 +247,29 @@ amplify add auth
 amplify push
 amplify publish
 ```
+
+### ソース修正
+
+`src/App.js`を修正する。
+
+```diff
++import Amplify from 'aws-amplify';
++import awsconfig from './aws-exports';
++import { withAuthenticator } from 'aws-amplify-react';
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+
++Amplify.configure(awsconfig);
+
+function App() {
+// 省略
+}
+
+-export default App;
++export default withAuthenticator(App, true);
+```
+
+たったこれだけで認証ページが追加される。
+
+![認証ページ](md-images/2019-07-13-14-49-59.png)
