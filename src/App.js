@@ -1,13 +1,31 @@
-import Amplify from 'aws-amplify';
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import awsconfig from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 Amplify.configure(awsconfig);
 
+const ListTodos = `
+query list {
+  listTodos {
+    items {
+      id name
+    }
+  }
+}
+`;
+
 function App() {
+  const [stateTodos, setTodos] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const todos = await API.graphql(graphqlOperation(ListTodos));
+      setTodos(todos.data.ListTodos.items);
+    })();
+  }, []);
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -23,6 +41,12 @@ function App() {
         >
           Learn React
         </a>
+        {
+          stateTodos.map(todo => (
+            <div id={todo.id} key={todo.id}>
+              {todo.name}
+            </div>
+          ))}
       </header>
     </div>
   );
