@@ -1,0 +1,4 @@
+{
+    "AppSyncApiName": "amplifySandbox",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST"
+}
