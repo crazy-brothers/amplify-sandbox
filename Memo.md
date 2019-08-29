@@ -317,7 +317,7 @@ const signUpConfig = {
 export default withAuthenticator(App, { signUpConfig });
 ```
 
-![サインインカスタマイズ](2019-08-29-15-43-01.png)
+![サインインカスタマイズ](md-images/2019-08-29-15-43-01.png)
 
 ## API(GraphQL)の追加
 
@@ -428,8 +428,8 @@ GraphQL endpoint: <URL>
 GraphQL API KEY: <APIキー>
 ```
 
-![クエリ発行 データ追加](2019-08-29-16-04-50.png)
+![クエリ発行 データ追加](md-images/2019-08-29-16-04-50.png)
 
 publishして画面を表示
 
-![検索結果](2019-08-29-17-05-30.png)
+![検索結果](md-images/2019-08-29-17-05-30.png)
