@@ -4,6 +4,7 @@ import { withAuthenticator } from 'aws-amplify-react';
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import * as subscriptions from './graphql/subscriptions';
 
 Amplify.configure(awsconfig);
 
@@ -22,8 +23,14 @@ function App() {
   useEffect(() => {
     (async () => {
       const todos = await API.graphql(graphqlOperation(ListTodos));
-      console.log(todos);
       setTodos(todos.data.listTodos.items);
+
+      API.graphql(graphqlOperation(subscriptions.onCreateTodo)).subscribe({
+        next: todoData => {
+          const { id, name } = todoData.value.data.onCreateTodo;
+          setTodos([].concat(todos.data.listTodos.items, [{id, name}]));
+        }
+      });
     })();
   }, []);
   
