@@ -2,38 +2,63 @@ import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import awsconfig from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 import React, { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import logo from './logo.svg';
 import './App.css';
+import * as mutations from './graphql/mutations';
+import * as queries from './graphql/queries';
 import * as subscriptions from './graphql/subscriptions';
 
 Amplify.configure(awsconfig);
 
-const ListTodos = `
-query list {
-  listTodos {
-    items {
-      id name
-    }
-  }
-}
-`;
-
-function App() {
+const App = () => {
   const [stateTodos, setTodos] = useState([]);
-  useEffect(() => {
-    (async () => {
-      const todos = await API.graphql(graphqlOperation(ListTodos));
-      setTodos(todos.data.listTodos.items);
-
-      API.graphql(graphqlOperation(subscriptions.onCreateTodo)).subscribe({
-        next: todoData => {
-          const { id, name } = todoData.value.data.onCreateTodo;
-          setTodos([].concat(todos.data.listTodos.items, [{id, name}]));
-        }
-      });
-    })();
-  }, []);
+  const [nameVal, setNameVal] = useState('');
+  const nameHandler = e => {
+    setNameVal(e.target.value);
+  }
   
+  // 追加
+  const clickHandler = async () => {
+    if (!nameVal) return;
+    await API.graphql(
+      graphqlOperation(mutations.createTodo, {input: {name: nameVal}})
+    );
+    setNameVal('');
+  };
+
+  // 削除
+  const deleteHandler = (id) => async () => {
+    await API.graphql(
+      graphqlOperation(mutations.deleteTodo, {input: { id }})
+    );
+  };
+
+  useEffect(() => {
+    // 最初の一覧取得
+    (async () => {
+      const todos = await API.graphql(graphqlOperation(queries.listTodos));
+      setTodos(todos.data.listTodos.items);
+    })();
+    
+    // 追加イベントの購読
+    API.graphql(graphqlOperation(subscriptions.onCreateTodo)).subscribe({
+      next: todoData => {
+        const { id, name } = todoData.value.data.onCreateTodo;
+        setTodos(prevTodos => [...prevTodos, { id, name }]);
+      }
+    });
+    
+    // 削除イベントの購読
+    API.graphql(graphqlOperation(subscriptions.onDeleteTodo)).subscribe({
+      next: todoData => {
+        const { id } = todoData.value.data.onDeleteTodo;
+        setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+      }
+    });
+}, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -49,12 +74,43 @@ function App() {
         >
           Learn React
         </a>
-        {
-          stateTodos.map(todo => (
-            <div id={todo.id} key={todo.id}>
-              {todo.name}
-            </div>
-          ))}
+        <div style={{padding: '1rem', backgroundColor: '#fff', display: 'flex'}}>
+          <TextField label="Name" value={nameVal} onChange={nameHandler} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={clickHandler}
+            size="large"
+            style={{marginLeft: '1rem'}}
+          >
+            Add
+          </Button>
+        </div>
+        {stateTodos.map(todo => (
+          <div
+            id={todo.id}
+            key={todo.id}
+            style={{
+              padding: '.5rem',
+              margin: '.5rem',
+              boxShadow: '1px 1px 4px #000',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            {todo.name}
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={deleteHandler(todo.id)}
+              size="small"
+              style={{marginLeft: '1rem'}}
+            >
+              Del
+            </Button>
+          </div>
+        ))}
       </header>
     </div>
   );
