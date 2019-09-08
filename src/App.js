@@ -28,13 +28,6 @@ const App = () => {
     setNameVal('');
   };
 
-  // 削除
-  const deleteHandler = (id) => async () => {
-    await API.graphql(
-      graphqlOperation(mutations.deleteTodo, {input: { id }})
-    );
-  };
-
   useEffect(() => {
     // 最初の一覧取得
     (async () => {
@@ -47,14 +40,6 @@ const App = () => {
       next: todoData => {
         const { id, name } = todoData.value.data.onCreateTodo;
         setTodos(prevTodos => [...prevTodos, { id, name }]);
-      }
-    });
-    
-    // 削除イベントの購読
-    API.graphql(graphqlOperation(subscriptions.onDeleteTodo)).subscribe({
-      next: todoData => {
-        const { id } = todoData.value.data.onDeleteTodo;
-        setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
       }
     });
 }, []);
@@ -74,42 +59,19 @@ const App = () => {
         >
           Learn React
         </a>
-        <div style={{padding: '1rem', backgroundColor: '#fff', display: 'flex'}}>
+        <div style={{padding: '1rem', display:'flex', backgroundColor: '#fff'}}>
           <TextField label="Name" value={nameVal} onChange={nameHandler} />
           <Button
             variant="contained"
             color="primary"
             onClick={clickHandler}
             size="large"
-            style={{marginLeft: '1rem'}}
           >
             Add
           </Button>
         </div>
         {stateTodos.map(todo => (
-          <div
-            id={todo.id}
-            key={todo.id}
-            style={{
-              padding: '.5rem',
-              margin: '.5rem',
-              boxShadow: '1px 1px 4px #000',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            {todo.name}
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={deleteHandler(todo.id)}
-              size="small"
-              style={{marginLeft: '1rem'}}
-            >
-              Del
-            </Button>
-          </div>
+          <div key={todo.id}>{todo.name}</div>
         ))}
       </header>
     </div>
