@@ -7,7 +7,22 @@ Amplify CLIが導入済みでAWSアカウントも取得済みの場合、以下
 ```bash
 $ git clone https://github.com/crazy-brothers/amplify-sandbox.git
 $ cd amplify-sandbox
-$ amplify env add myenv
+$ amplify env add mydev
+Note: It is recommended to run this command from the root of your app directory
+? Do you want to use an existing environment? No
+? Enter a name for the environment mydev
+? Choose your default editor: Visual Studio Code
+Using default provider  awscloudformation
+
+For more information on AWS Profiles, see:
+https://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html
+
+? Do you want to use an AWS profile? Yes
+? Please choose the profile you want to use default
+⠦ Initializing project in the cloud...
+
+# 〜省略〜
+
 $ amplify push
 ```
 
